@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../src/database.php';
 require_once __DIR__ . '/../src/helpers.php';
-require_once __DIR__ . '/../src/ScrapService.php';
 
 $lang = $_COOKIE['lang'] ?? 'fr';
 $mode = $_COOKIE['mode'] ?? 'light';
@@ -15,24 +14,6 @@ if ($recipeId) {
     $isEditing = true;
 }
 
-// Logique de scraping
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['scrape'])) {
-    $url = $_GET['url'] ?? '';
-    $scrapService = new ScrapService();
-    try {
-        $scrapedRecipe = $scrapService->detectAndScrap($url);
-        header('Content-Type: application/json');
-        echo json_encode($scrapedRecipe);
-        exit;
-    } catch (Exception $e) {
-        http_response_code(400);
-        header('Content-Type: application/json');
-        echo json_encode(['error' => $e->getMessage()]);
-        exit;
-    }
-}
-
-// Logique de soumission du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'] ?? '';
     $description = $_POST['description'] ?? '';
@@ -58,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             updateRecipe($recipeId, $name, $ingredients, $description, $url, $image, $isFavorite);
         } else {
             echo $ingredients;
-            //addRecipe($name, $ingredients, $description, $url, $image, $isFavorite);
+            addRecipe($name, $ingredients, $description, $url, $image, $isFavorite);
         }
         header('Location: index.php');
         exit;
@@ -117,7 +98,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="form-group">
             <label for="url"><?= translate('urlForm') ?></label>
             <input type="text" id="url" name="url" value="<?= $isEditing ? htmlspecialchars($recipe['url']) : '' ?>" class="form-input">
-            <button type="button" id="scrape-button"><?= translate('scrapeButton') ?></button>
         </div>
 
         <div class="form-group">
@@ -153,46 +133,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $(this).parent().remove();
         });
 
-
-        $("#scrape-button").click(function() {
-            var url = $("#url").val();
-            if (url) {
-                $.ajax({
-                    url: '?scrape=1',
-                    method: 'GET',
-                    data: { url: url },
-                    dataType: 'json',
-                    success: function(data) {
-                        $("#name").val(data.name);
-                        $("#description").val(data.description);
-                        $("#image").val(data.image);
-                        $("input[name='isFavorite']").prop('checked', data.isFavorite);
-
-                        // Vider le conteneur d'ingrédients existant
-                        $("#ingredients-container").empty();
-
-                        // Ajouter les nouveaux ingrédients
-                        data.ingredients.forEach(function(ingredient) {
-                            var newRow = $("<div class='ingredient-row'>" +
-                                "<input type='text' name='ingredient_name[]' value='" + ingredient.name + "' required class='form-input'>" +
-                                "<input type='text' name='ingredient_quantity[]' value='" + ingredient.quantity + "' class='form-input'>" +
-                                "<button type='button' class='remove-ingredient'><?= translate('removeIngForm') ?></button>" +
-                                "</div>");
-                            $("#ingredients-container").append(newRow);
-                        });
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        var errorMessage = "Erreur lors du scraping";
-                        if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
-                            errorMessage += ": " + jqXHR.responseJSON.error;
-                        }
-                        alert(errorMessage);
-                    }
-                });
-            } else {
-                alert("Veuillez entrer une URL valide.");
-            }
-        });
     });
 </script>
 

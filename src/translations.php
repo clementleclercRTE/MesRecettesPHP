@@ -6,7 +6,7 @@ return [
         'home' => 'Accueil',
         'add' => 'Ajouter',
         'mode' => 'Changer mode',
-        'lang' => 'English',
+        'lang' =>  '🇬🇧',
 
         //index.php
         'title' => 'Mes Recettes',
@@ -34,7 +34,7 @@ return [
         'recipeLink' => 'Liens vers la recette',
         'backToList' => 'Retour à la liste',
         'editRecipe' => 'Modifier la recette',
-
+        'trashRecipe' => 'Supprimer la recette',
 
     ],
 
@@ -43,7 +43,7 @@ return [
         'home' => 'Home',
         'add' => 'Add',
         'mode' => 'toggle mode',
-        'lang' => 'Français',
+        'lang' => '󠁧󠁢󠁥󠁮󠁧🇫🇷',
 
         //index.php
         'title' => 'My Recipes',
@@ -71,6 +71,7 @@ return [
         'recipeLink' => 'Original Recipe',
         'backToList' => 'Back to list',
         'editRecipe' => 'Edit Recipe',
+        'trashRecipe' => 'Delete Recipe',
 
 
 

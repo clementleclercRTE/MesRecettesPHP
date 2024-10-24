@@ -85,6 +85,17 @@ body.dark .ingredients-list, body.dark .recipe-description {
 
 .edit-recipe-link {
     display: inline-block;
+    background-color: green;
+    color: #fff;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.delete-recipe-link {
+    display: inline-block;
     background-color: red;
     color: #fff;
     padding: 10px 15px;

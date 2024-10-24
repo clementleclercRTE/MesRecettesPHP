@@ -40,7 +40,6 @@ function addRecipe($name, $ingredients, $description, $url, $image, $isFavorite)
     $pdo->beginTransaction();
 
     try {
-        // Insérer la recette
         $sql = "INSERT INTO recipes (name, description, url, image, isFavorite) 
                 VALUES (:name, :description, :url, :image, :isFavorite)";
         $stmt = $pdo->prepare($sql);
@@ -54,8 +53,6 @@ function addRecipe($name, $ingredients, $description, $url, $image, $isFavorite)
         $recipeId = $pdo->lastInsertId();
 
 
-
-        // Insérer les ingrédients
         $sql = "INSERT INTO ingredients (recipe_id, name, quantity) VALUES (:recipe_id, :name, :quantity)";
         $stmt = $pdo->prepare($sql);
 
@@ -144,6 +141,17 @@ function getAllRecipes() {
     }
 
     return $recipes;
+}
+
+function deleteRecipe($id) {
+    $pdo = getDatabaseConnection();
+    $stmt = $pdo->prepare("DELETE FROM recipes WHERE id = :id");
+    $stmt->execute([':id' => $id]);
+
+    $stmt = $pdo->prepare("DELETE FROM ingredients WHERE recipe_id = :id");
+    $stmt->execute([':id' => $id]);
+
+    return true;
 }
 
 //creer les tables au demarrage si elles n'existent pas.

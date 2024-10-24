@@ -5,23 +5,26 @@ require_once __DIR__ . '/../src/helpers.php';
 $lang = $_COOKIE['lang'] ?? 'fr';
 $mode = $_COOKIE['mode'] ?? 'light';
 
-// Récupérer l'ID de la recette depuis l'URL
 $recipeId = $_GET['id'] ?? null;
 
 if (!$recipeId) {
-    // Rediriger vers la page d'accueil si aucun ID n'est fourni
     header('Location: index.php');
     exit;
 }
 
-// Récupérer les détails de la recette
 $recipe = getRecipeById($recipeId);
 
 if (!$recipe) {
-    // Rediriger vers la page d'accueil si la recette n'existe pas
     header('Location: index.php');
     exit;
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    deleteRecipe($recipeId);
+    header('Location: index.php');
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="<?= $lang ?>">
@@ -76,6 +79,12 @@ if (!$recipe) {
         <a href="add_recipe.php?id=<?= $recipe['id'] ?>" class="edit-recipe-link">
             <i class="fas fa-edit"></i> <?= translate('editRecipe') ?>
         </a>
+        <form method="POST" onsubmit="return confirm('<?= translate('confirmDeleteRecipe') ?>');">
+            <input type="hidden" name="id" value="<?= $recipe['id'] ?>">
+            <button type="submit" class="delete-recipe-link">
+                <i class="fas fa-trash"></i> <?= translate('trashRecipe') ?>
+            </button>
+        </form>
     </div>
 
     <a href="index.php" class="back-link">

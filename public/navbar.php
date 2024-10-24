@@ -10,7 +10,7 @@ require_once __DIR__ . '/../src/helpers.php';
     <ul>
         <li><a href="index.php"><?= translate('home') ?></a></li>
         <li><a href="add_recipe.php"><?= translate('add') ?></a></li>
-        <li><a href="toggle_mode.php"><?= translate('mode') ?></a></li>
+        <li><a href="toggle_mode.php"><?= $mode=='dark' ? '☀️':'🌕' ?></a></li>
         <li><a href="toggle_lang.php"><?= translate('lang') ?></a></li>
     </ul>
 </nav>
