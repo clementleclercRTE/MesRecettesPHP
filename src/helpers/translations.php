@@ -3,13 +3,14 @@
 return [
     'fr' => [
         // Navigation
+        'appName' => 'Mes recettes',
         'home' => 'Accueil',
         'add' => 'Ajouter',
         'mode' => 'Changer mode',
         'lang' =>  '🇬🇧',
 
         //index.php
-        'title' => 'Mes Recettes',
+        'recipesList' => 'Liste de recettes',
         'noRecipe' => 'Aucune recette !',
         'viewRecipe' => 'Voir la recette',
 
@@ -40,13 +41,14 @@ return [
 
     'en' => [
         // Navigation
+        'appName' => 'My recipes',
         'home' => 'Home',
         'add' => 'Add',
         'mode' => 'toggle mode',
         'lang' => '󠁧󠁢󠁥󠁮󠁧🇫🇷',
 
         //index.php
-        'title' => 'My Recipes',
+        'recipesList' => 'Recipes list',
         'noRecipe' => 'No recipe!',
         'viewRecipe' => 'View recipe',
 

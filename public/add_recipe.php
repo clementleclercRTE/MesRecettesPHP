@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../src/database.php';
-require_once __DIR__ . '/../src/helpers.php';
+require_once __DIR__ . '/../src/database/database.php';
+require_once __DIR__ . '/../src/helpers/helpers.php';
 
 $lang = $_COOKIE['lang'] ?? 'fr';
 $mode = $_COOKIE['mode'] ?? 'light';
@@ -53,12 +53,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $isEditing ? translate('editRecipeTitle') : translate('addRecipeTitle') ?></title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="../template/components/navbar.css">
     <link rel="stylesheet" href="css/add_recipe.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="<?= $mode ?>">
-<?php include 'navbar.php'; ?>
+<?php include '../template/components/navbar.php'; ?>
 
 <div class="form-container">
     <h1><?= $isEditing ? translate('editRecipeTitle') : translate('addRecipeTitle') ?></h1>

@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../src/database.php';
-require_once __DIR__ . '/../src/helpers.php';
+require_once __DIR__ . '/../src/database/database.php';
+require_once __DIR__ . '/../src/helpers/helpers.php';
 
 $lang = $_COOKIE['lang'] ?? 'fr';
 $mode = $_COOKIE['mode'] ?? 'light';
@@ -33,12 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($recipe['name']) ?> - <?= translate('RecipeDetails') ?></title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="../template/components/navbar.css">
     <link rel="stylesheet" href="css/recipe_details.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body class="<?= $mode ?>">
-<?php include 'navbar.php'; ?>
+<?php include '../template/components/navbar.php'; ?>
 
 <div class="recipe-container">
     <h1 class="recipe-title"><?= htmlspecialchars($recipe['name']) ?></h1>
