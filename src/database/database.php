@@ -33,9 +33,19 @@ function createTables() {
         FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
     )";
     $pdo->exec($sql);
+
+    //creation de la table des etapes
+    $sql = "CREATE TABLE IF NOT EXISTS steps (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        recipe_id INTEGER,
+        description TEXT NOT NULL,
+        num INTEGER NOT NULL,
+        FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
+    )";
+    $pdo->exec($sql);
 }
 
-function addRecipe($name, $ingredients, $description, $url, $image, $isFavorite) {
+function addRecipe($name, $ingredients, $description, $url, $image, $isFavorite, $steps) {
     $pdo = getDatabaseConnection();
     $pdo->beginTransaction();
 
@@ -64,6 +74,17 @@ function addRecipe($name, $ingredients, $description, $url, $image, $isFavorite)
             ]);
         }
 
+        $sql = "INSERT INTO STEPS (recipe_id, description, num) VALUES (:recipe_id, :description, :num)";
+        $stmt = $pdo->prepare($sql);
+
+        foreach ($steps as $step) {
+            $stmt->execute([
+                ':recipe_id' => $recipeId,
+                ':description' => $step['description'],
+                ':num' => $ingredient['num'] ?? ''
+            ]);
+        }
+
         $pdo->commit();
     } catch (Exception $e) {
         $pdo->rollBack();
@@ -73,7 +94,7 @@ function addRecipe($name, $ingredients, $description, $url, $image, $isFavorite)
     }
 }
 
-function updateRecipe($id, $name, $ingredients, $description, $url, $image, $isFavorite) {
+function updateRecipe($id, $name, $ingredients, $description, $url, $image, $isFavorite, $steps) {
     $pdo = getDatabaseConnection();
     $pdo->beginTransaction();
 
@@ -107,6 +128,23 @@ function updateRecipe($id, $name, $ingredients, $description, $url, $image, $isF
             ]);
         }
 
+        // Supprimer les anciennes etapes
+        $sql = "DELETE FROM steps WHERE recipe_id = :recipe_id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':recipe_id' => $id]);
+
+        // Ajouter les nouvelles etapes
+        $sql = "INSERT INTO steps (recipe_id, description, num) VALUES (:recipe_id, :description, :num)";
+        $stmt = $pdo->prepare($sql);
+
+        foreach ($steps as $step) {
+            $stmt->execute([
+                ':recipe_id' => $id,
+                ':description' => $step['description'],
+                ':num' => $step['num']
+            ]);
+        }
+
         $pdo->commit();
     } catch (Exception $e) {
         $pdo->rollBack();
@@ -124,6 +162,12 @@ function getRecipeById($id) {
         $stmt = $pdo->prepare("SELECT name, quantity FROM ingredients WHERE recipe_id = :recipe_id");
         $stmt->execute([':recipe_id' => $id]);
         $recipe['ingredients'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    if ($recipe) {
+        $stmt = $pdo->prepare("SELECT description, num FROM steps WHERE recipe_id = :recipe_id");
+        $stmt->execute([':recipe_id' => $id]);
+        $recipe['steps'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     return $recipe;
@@ -151,6 +195,8 @@ function deleteRecipe($id) {
     $stmt = $pdo->prepare("DELETE FROM ingredients WHERE recipe_id = :id");
     $stmt->execute([':id' => $id]);
 
+    $stmt = $pdo->prepare("DELETE FROM steps WHERE recipe_id = :id");
+    $stmt->execute([':id' => $id]);
     return true;
 }
 

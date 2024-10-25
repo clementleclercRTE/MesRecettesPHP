@@ -16,7 +16,8 @@ function renderRecipeCard($recipe) {
         <div class="recipe-content">
             <h2><?= htmlspecialchars($recipe['name']) ?></h2>
             <p class="recipe-description">
-                <?= htmlspecialchars(mb_substr($recipe['description'], 0, $descriptionLength)) ?>...
+                <?= htmlspecialchars(mb_substr($recipe['description'], 0, $descriptionLength)) ?>
+                <?= strlen($recipe['description']) > $descriptionLength ? '...' : '' ?>
             </p>
             <a href="recipe_details.php?id=<?= $recipe['id'] ?>" class="view-recipe">
                 <?= translate('viewRecipe') ?>

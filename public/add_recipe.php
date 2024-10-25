@@ -25,6 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ingredientNames = $_POST['ingredient_name'] ?? [];
     $ingredientQuantities = $_POST['ingredient_quantity'] ?? [];
 
+    $steps = [];
+    $stepsDesc = $_POST['step_desc'] ?? [];
+    $stepsNum = $_POST['step_num'] ?? [];
+
     for ($i = 0; $i < count($ingredientNames); $i++) {
         if (!empty($ingredientNames[$i])) {
             $ingredients[] = [
@@ -34,12 +38,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    for ($i = 0; $i < count($stepsNum); $i++) {
+        if (!empty($stepsDesc[$i])) {
+            $steps[] = [
+                'description' => $stepsDesc[$i],
+                'num' => $stepsNum[$i],
+            ];
+        }
+    }
+
     if (!empty($name) && !empty($ingredients)) {
         if ($isEditing) {
-            updateRecipe($recipeId, $name, $ingredients, $description, $url, $image, $isFavorite);
+            updateRecipe($recipeId, $name, $ingredients, $description, $url, $image, $isFavorite, $steps);
         } else {
             echo $ingredients;
-            addRecipe($name, $ingredients, $description, $url, $image, $isFavorite);
+            addRecipe($name, $ingredients, $description, $url, $image, $isFavorite, $steps);
         }
         header('Location: index.php');
         exit;
@@ -96,6 +109,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="form-group">
+            <label><?= translate('stepDesc') ?></label>
+            <div id="steps-container">
+                <?php if ($isEditing): ?>
+                    <?php foreach ($recipe['steps'] as $index => $step): ?>
+                        <div class="step-row">
+                            <input type="text" name="step_desc[]" value="<?= htmlspecialchars($step['description']) ?>" placeholder="<?= translate('stepDesc') ?>" required class="form-input">
+                            <input type="text" name="step_num[]" value="<?= htmlspecialchars($step['num']) ?>" placeholder="<?= translate('stepNum') ?>" class="form-input">
+                            <button type="button" class="remove-step">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="step-row">
+                        <input type="text" name="step_desc[]" value="" placeholder="<?= translate('stepDesc') ?>" required class="form-input">
+                        <input type="text" name="step_num[]" value="" placeholder="<?= translate('stepNum') ?>" class="form-input">
+                        <button type="button" class="remove-ingredient">
+                            <i class="fas fa-trash"></i>
+                        </button>                    </div>
+                <?php endif; ?>
+            </div>
+            <button type="button" id="add-step"><?= translate('addStepForm') ?></button>
+        </div>
+
+        <div class="form-group">
             <label for="description"><?= translate('desc') ?></label>
             <textarea id="description" name="description" class="form-textarea"><?= $isEditing ? htmlspecialchars($recipe['description']) : '' ?></textarea>
         </div>
@@ -135,6 +173,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
 
         $(document).on("click", ".remove-ingredient", function() {
+            $(this).parent().remove();
+        });
+
+        $("#add-ingredient").click(function() {
+            var newRow = $("<div class='ingredient-row'>" +
+                "<input type='text' name='ingredient_name[]' placeholder='<?= translate('ingNameForm') ?>' required class='form-input'>" +
+                "<input type='text' name='ingredient_quantity[]' placeholder='<?= translate('ingQuantityForm') ?>' class='form-input'>" +
+                "<button type='button' class='remove-ingredient'> <i class='fas fa-trash'></i></button>"+
+                "</div>");
+            $("#ingredients-container").append(newRow);
+        });
+
+        $(document).on("click", ".remove-ingredient", function() {
+            $(this).parent().remove();
+        });
+
+        $("#add-step").click(function() {
+            var newRow = $("<div class='step-row'>" +
+                "<input type='text' name='step_desc[]' placeholder='<?= translate('stepDesc') ?>' required class='form-input'>" +
+                "<input type='text' name='step_ num[]' placeholder='<?= translate('stepNum') ?>' class='form-input'>" +
+                "<button type='button' class='remove-step'> <i class='fas fa-trash'></i></button>"+
+                "</div>");
+            $("#steps-container").append(newRow);
+        });
+
+        $(document).on("click", ".remove-step", function() {
             $(this).parent().remove();
         });
 

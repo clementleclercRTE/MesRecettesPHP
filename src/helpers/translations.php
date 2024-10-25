@@ -37,6 +37,7 @@ return [
         'editRecipe' => 'Modifier la recette',
         'trashRecipe' => 'Supprimer la recette',
         'confirmDeleteRecipe' => 'Voulez-vous vraiment supprimer cette recette ?',
+        'recipeStep' => 'Etapes'
 
     ],
 
@@ -76,6 +77,7 @@ return [
         'editRecipe' => 'Edit Recipe',
         'trashRecipe' => 'Delete Recipe',
         'confirmDeleteRecipe' => 'Are you sure you want to delete this recipe?',
+        'recipeStep' => 'Step'
 
 
 

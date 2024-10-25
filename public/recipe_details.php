@@ -73,12 +73,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </ul>
         </section>
 
-        <section class="recipe-section">
-            <h2><?= translate('Description') ?></h2>
-            <div class="recipe-description">
-                <?= nl2br(htmlspecialchars($recipe['description'])) ?>
-            </div>
-        </section>
+        <div class="recipe-content">
+            <section class="recipe-section">
+                <h2><?= translate('steps') ?></h2>
+                <ul class="ingredients-list">
+                    <?php foreach ($recipe['steps'] as $step): ?>
+                        <lo>
+                            <?= htmlspecialchars($step['num']) ?> --
+                            <?= htmlspecialchars($step['description']) ?>
+                        </lo>
+                    <?php endforeach; ?>
+                </ul>
+            </section>
 
 
         <div class="edit-form">
