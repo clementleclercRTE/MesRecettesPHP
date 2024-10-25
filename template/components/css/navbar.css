@@ -80,7 +80,6 @@
     background-color: var(--navbar-border);
 }
 
-/* Action Buttons */
 .navbar-actions {
     display: flex;
     gap: 0.5rem;

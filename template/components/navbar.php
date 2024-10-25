@@ -34,7 +34,7 @@ function isActiveLink($path) {
 
         <!-- Actions (droite) -->
         <div class="navbar-actions">
-            <button class="theme-toggle" onclick="window.location.href='../../src/helpers/toggle_mode.php'" aria-label="Toggle theme">
+            <button class="theme-toggle" onclick="toggleMode()" aria-label="Toggle theme">
                 <?php if ($mode === 'dark'): ?>
                     <i class="fas fa-sun"></i>
                 <?php else: ?>
@@ -61,9 +61,24 @@ function isActiveLink($path) {
 </nav>
 
 <script>
+
     function toggleMobileMenu() {
         document.querySelector('.navbar-links').classList.toggle('active');
         document.querySelector('.navbar-actions').classList.toggle('active');
         document.querySelector('.navbar-burger').classList.toggle('active');
     }
+
+    async function toggleMode() {
+        const body = document.body;
+        const currentMode = body.className === 'dark' ? 'light' : 'dark';
+        body.className = currentMode;
+
+        //appelle la fonction php pour sauvergarder les cookies
+        try {
+            await fetch('../../src/helpers/toggle_mode.php?mode=' + currentMode);
+        } catch (error) {
+            console.error('Erreur:', error);
+        }
+    }
+
 </script>

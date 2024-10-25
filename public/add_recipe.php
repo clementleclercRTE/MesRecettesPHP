@@ -53,11 +53,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $isEditing ? translate('editRecipeTitle') : translate('addRecipeTitle') ?></title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="../template/components/navbar.css">
+    <link rel="stylesheet" href="../template/components/css/navbar.css">
     <link rel="stylesheet" href="css/add_recipe.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="<?= $mode ?>">
+
 <?php include '../template/components/navbar.php'; ?>
 
 <div class="form-container">
@@ -76,15 +78,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="ingredient-row">
                             <input type="text" name="ingredient_name[]" value="<?= htmlspecialchars($ingredient['name']) ?>" placeholder="<?= translate('ingName') ?>" required class="form-input">
                             <input type="text" name="ingredient_quantity[]" value="<?= htmlspecialchars($ingredient['quantity']) ?>" placeholder="<?= translate('ingQuantity') ?>" class="form-input">
-                            <button type="button" class="remove-ingredient"><?= translate('removeIngForm') ?></button>
+                            <button type="button" class="remove-ingredient">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <div class="ingredient-row">
                         <input type="text" name="ingredient_name[]" value="" placeholder="<?= translate('ingNameForm') ?>" required class="form-input">
                         <input type="text" name="ingredient_quantity[]" value="" placeholder="<?= translate('ingQuantityForm') ?>" class="form-input">
-                        <button type="button" class="remove-ingredient"><?= translate('removeIngForm') ?></button>
-                    </div>
+                        <button type="button" class="remove-ingredient">
+                            <i class="fas fa-trash"></i>
+                        </button>                    </div>
                 <?php endif; ?>
             </div>
             <button type="button" id="add-ingredient"><?= translate('addIngForm') ?></button>
@@ -124,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             var newRow = $("<div class='ingredient-row'>" +
                 "<input type='text' name='ingredient_name[]' placeholder='<?= translate('ingNameForm') ?>' required class='form-input'>" +
                 "<input type='text' name='ingredient_quantity[]' placeholder='<?= translate('ingQuantityForm') ?>' class='form-input'>" +
-                "<button type='button' class='remove-ingredient'><?= translate('removeIngForm') ?></button>" +
+                "<button type='button' class='remove-ingredient'> <i class='fas fa-trash'></i></button>"+
                 "</div>");
             $("#ingredients-container").append(newRow);
         });

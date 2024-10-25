@@ -32,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($recipe['name']) ?> - <?= translate('RecipeDetails') ?></title>
+    <link rel="stylesheet" href="../template/components/css/navbar.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="../template/components/navbar.css">
     <link rel="stylesheet" href="css/recipe_details.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
@@ -41,7 +41,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php include '../template/components/navbar.php'; ?>
 
 <div class="recipe-container">
-    <h1 class="recipe-title"><?= htmlspecialchars($recipe['name']) ?></h1>
+
+   <div class="title-container">
+       <h1 class="recipe-title"><?= htmlspecialchars($recipe['name']) ?></h1>
+       <?php if ($recipe['url']): ?>
+           <a href="<?= htmlspecialchars($recipe['url']) ?>" target="_blank" class="original-recipe-link">
+               <i class="fas fa-external-link-alt"></i>
+           </a>
+       <?php endif; ?>
+   </div>
+
 
     <?php if ($recipe['image']): ?>
         <div class="recipe-image" style="background-image: url('<?= htmlspecialchars($recipe['image']) ?>');">
@@ -71,20 +80,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </section>
 
-        <?php if ($recipe['url']): ?>
-            <a href="<?= htmlspecialchars($recipe['url']) ?>" target="_blank" class="original-recipe-link">
-                <i class="fas fa-external-link-alt"></i> <?= translate('recipeLink') ?>
-            </a>
-        <?php endif; ?>
-        <a href="add_recipe.php?id=<?= $recipe['id'] ?>" class="edit-recipe-link">
-            <i class="fas fa-edit"></i> <?= translate('editRecipe') ?>
-        </a>
-        <form method="POST" onsubmit="return confirm('<?= translate('confirmDeleteRecipe') ?>');">
-            <input type="hidden" name="id" value="<?= $recipe['id'] ?>">
-            <button type="submit" class="delete-recipe-link">
-                <i class="fas fa-trash"></i> <?= translate('trashRecipe') ?>
+
+        <div class="edit-form">
+
+            <button onclick="window.location.href='add_recipe.php?id=<?= $recipe['id'] ?>'" class="edit-recipe-button">
+                <i class="fas fa-edit"></i>
+                <span><?= translate('editRecipe') ?></span>
             </button>
-        </form>
+
+            <form method="POST"  onsubmit="return confirm('<?= translate('confirmDeleteRecipe') ?>');">
+                <input type="hidden" name="id" value="<?= $recipe['id'] ?>">
+                <button type="submit" class="delete-recipe-button">
+                    <i class="fas fa-trash"></i>
+                    <span><?= translate('trashRecipe') ?></span>
+                </button>
+            </form>
+        </div>
     </div>
 
     <a href="index.php" class="back-link">

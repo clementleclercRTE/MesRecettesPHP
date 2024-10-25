@@ -36,6 +36,7 @@ return [
         'backToList' => 'Retour à la liste',
         'editRecipe' => 'Modifier la recette',
         'trashRecipe' => 'Supprimer la recette',
+        'confirmDeleteRecipe' => 'Voulez-vous vraiment supprimer cette recette ?',
 
     ],
 
@@ -74,6 +75,7 @@ return [
         'backToList' => 'Back to list',
         'editRecipe' => 'Edit Recipe',
         'trashRecipe' => 'Delete Recipe',
+        'confirmDeleteRecipe' => 'Are you sure you want to delete this recipe?',
 
 
 

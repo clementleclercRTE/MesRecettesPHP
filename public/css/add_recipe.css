@@ -25,9 +25,20 @@ h1 {
     color: #e0e0e0;
 }
 
-/* Form Styles */
 .form-group {
     margin-bottom: 1.5rem;
+}
+
+.ingredient-row{
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.remove-ingredient{
+    border-radius: 50px;
+    border-color: red;
+    background-color: white;
 }
 
 label {
