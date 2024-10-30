@@ -26,7 +26,6 @@ $recipes = getAllRecipes();
 <h1><?= translate('recipesList') ?></h1>
 
 <?php
-// Affichage de la grille de recettes avec options personnalisées
 renderRecipeGrid($recipes);
 ?>
 </body>

@@ -92,6 +92,8 @@ function addRecipe($name, $ingredients, $description, $url, $image, $isFavorite,
         error_log("Erreur dans addRecipe: " . $e->getMessage());
         throw $e;
     }
+
+    return $recipeId;
 }
 
 function updateRecipe($id, $name, $ingredients, $description, $url, $image, $isFavorite, $steps) {

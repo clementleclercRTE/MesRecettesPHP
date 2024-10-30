@@ -104,6 +104,44 @@ body.dark .ingredients-list, body.dark .recipe-description {
     transition: all 0.2s ease;
 }
 
+.recipe-steps {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.steps-list {
+    list-style: none;
+    padding: 0;
+}
+
+.step-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.step-number {
+    background: #ff6b6b;
+    color: white;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.step-description {
+    flex: 1;
+    line-height: 1.5;
+}
 
 
 .edit-recipe-button i,

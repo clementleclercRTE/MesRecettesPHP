@@ -74,14 +74,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </section>
 
         <div class="recipe-content">
-            <section class="recipe-section">
+            <section class="recipe-steps">
                 <h2><?= translate('steps') ?></h2>
-                <ul class="ingredients-list">
+                <ul class="steps-list">
                     <?php foreach ($recipe['steps'] as $step): ?>
-                        <lo>
-                            <?= htmlspecialchars($step['num']) ?> --
-                            <?= htmlspecialchars($step['description']) ?>
-                        </lo>
+                        <li class="step-item">
+                            <div class="step-number"><?= htmlspecialchars($step['num']) ?></div>
+                            <div class="step-description"><?= htmlspecialchars($step['description']) ?></div>
+                        </li>
                     <?php endforeach; ?>
                 </ul>
             </section>
