@@ -130,7 +130,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <input type="text" name="step_num[]" value=1 placeholder="<?= translate('stepNum')  ?>" class="form-input">
                         <button type="button" class="remove-ingredient">
                             <i class="fas fa-trash"></i>
-                        </button>                    </div>
+                        </button>
+                    </div>
                 <?php endif; ?>
             </div>
             <button type="button" id="add-step"><?= translate('addStepForm') ?></button>
@@ -144,6 +145,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="form-group">
             <label for="url"><?= translate('urlForm') ?></label>
             <input type="text" id="url" name="url" value="<?= $isEditing ? htmlspecialchars($recipe['url']) : '' ?>" class="form-input">
+            <button type="button" id="scrape-recipe-btn" class="scrape-recipe-btn">
+                <i class="fas fa-trash"></i>
+            </button>
         </div>
 
         <div class="form-group">
@@ -201,6 +205,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $(this).parent().remove();
             updateStepNumbers();
         });
+
+        $("#scrape-recipe-btn").click(async function() {
+            const button = $(this);
+            const url = $("#url").val();
+            if (!url) return;
+
+            try {
+                button.addClass('loading');
+                button.find('i').removeClass('fa-download').addClass('fa-spinner');
+
+                const recipe = await recipeScraper.scrapeRecipe(url);
+                $("#name").val(recipe.name);
+                $("#image").val(recipe.image);
+
+                $("#ingredients-container").empty();
+                recipe.ingredients.forEach(ing => {
+                    const newRow = $("<div class='ingredient-row'>" +
+                        "<input type='text' name='ingredient_name[]' value='" + ing.name + "' required class='form-input'>" +
+                        "<input type='text' name='ingredient_quantity[]' value='" + ing.quantity + "' class='form-input'>" +
+                        "<button type='button' class='remove-ingredient'><i class='fas fa-trash'></i></button>" +
+                        "</div>");
+                    $("#ingredients-container").append(newRow);
+                });
+            } catch (error) {
+                alert("Erreur lors du scraping : " + error.message);
+            } finally {
+                button.removeClass('loading');
+                button.find('i').removeClass('fa-spinner').addClass('fa-download');
+            }
+        });
+
+
+
 
     });
 </script>

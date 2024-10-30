@@ -28,6 +28,9 @@ return [
         'ingQuantityForm' => 'Quantité',
         'removeIngForm' => 'Supprimer ingrédient',
         'addIngForm' => 'Ajouter ingredient',
+        'stepDesc' => "Description de l'étape",
+        'stepNum' => "Numero de l'étape",
+        'addStepForm' => "Ajouter une étape",
 
         //recipe_details.php
         'ing' => 'Ingrédients',
@@ -68,6 +71,10 @@ return [
         'ingQuantityForm' => 'Quantity',
         'removeIngForm' => 'remove ingredient',
         'addIngForm' => 'add ingredient',
+        'stepDesc' => 'Step Description',
+        'stepNum' => 'Step Number',
+        'addStepForm' => "Add a step",
+
 
         //recipe_details.php
         'ing' => 'Ingrédients',
@@ -77,7 +84,7 @@ return [
         'editRecipe' => 'Edit Recipe',
         'trashRecipe' => 'Delete Recipe',
         'confirmDeleteRecipe' => 'Are you sure you want to delete this recipe?',
-        'recipeStep' => 'Step'
+        'recipeStep' => 'Recipe Step',
 
 
 
