@@ -1,21 +1,32 @@
 <?php
 require_once __DIR__ . '/../src/database/database.php';
 require_once __DIR__ . '/../src/helpers/helpers.php';
+require_once __DIR__ . '/../src/helpers/RecipeScraper.php';
 
+$scraper = new RecipeScraper();
 $lang = $_COOKIE['lang'] ?? 'fr';
 $mode = $_COOKIE['mode'] ?? 'light';
-
 $recipeId = $_GET['id'] ?? null;
 $recipe = null;
 $isEditing = false;
-
 $stepsCount = 0;
-$ingredientsCount = 0;
 
 if ($recipeId) {
     $recipe = getRecipeById($recipeId);
     $isEditing = true;
     $stepsCount = count($recipe['steps']);
+}
+
+if (isset($_POST['scrape'])) {
+    header('Content-Type: application/json');
+    try {
+        $url = $_POST['url'] ?? '';
+        $recipe = $scraper->scrape($url);
+        echo json_encode(['success' => true, 'recipe' => $recipe]);
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    }
+    exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -55,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($isEditing) {
             updateRecipe($recipeId, $name, $ingredients, $description, $url, $image, $isFavorite, $steps);
         } else {
-             $recipeId = addRecipe($name, $ingredients, $description, $url, $image, $isFavorite, $steps);
+            $recipeId = addRecipe($name, $ingredients, $description, $url, $image, $isFavorite, $steps);
         }
         header('Location: recipe_details.php?id=' . $recipeId);
         exit;
@@ -75,7 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="<?= $mode ?>">
-
 <?php include '../template/components/navbar.php'; ?>
 
 <div class="form-container">
@@ -90,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label><?= translate('ing') ?></label>
             <div id="ingredients-container">
                 <?php if ($isEditing): ?>
-                    <?php foreach ($recipe['ingredients'] as $index => $ingredient): ?>
+                    <?php foreach ($recipe['ingredients'] as $ingredient): ?>
                         <div class="ingredient-row">
                             <input type="text" name="ingredient_name[]" value="<?= htmlspecialchars($ingredient['name']) ?>" placeholder="<?= translate('ingName') ?>" required class="form-input">
                             <input type="text" name="ingredient_quantity[]" value="<?= htmlspecialchars($ingredient['quantity']) ?>" placeholder="<?= translate('ingQuantity') ?>" class="form-input">
@@ -101,11 +111,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php endforeach; ?>
                 <?php else: ?>
                     <div class="ingredient-row">
-                        <input type="text" name="ingredient_name[]" value="" placeholder="<?= translate('ingNameForm') ?>" required class="form-input">
-                        <input type="text" name="ingredient_quantity[]" value="" placeholder="<?= translate('ingQuantityForm') ?>" class="form-input">
+                        <input type="text" name="ingredient_name[]" placeholder="<?= translate('ingNameForm') ?>" required class="form-input">
+                        <input type="text" name="ingredient_quantity[]" placeholder="<?= translate('ingQuantityForm') ?>" class="form-input">
                         <button type="button" class="remove-ingredient">
                             <i class="fas fa-trash"></i>
-                        </button>                    </div>
+                        </button>
+                    </div>
                 <?php endif; ?>
             </div>
             <button type="button" id="add-ingredient"><?= translate('addIngForm') ?></button>
@@ -115,10 +126,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label><?= translate('stepDesc') ?></label>
             <div id="steps-container">
                 <?php if ($isEditing): ?>
-                    <?php foreach ($recipe['steps'] as $index => $step): ?>
+                    <?php foreach ($recipe['steps'] as $step): ?>
                         <div class="step-row">
-                            <input type="text" name="step_desc[]" value="<?= htmlspecialchars($step['description']) ?>" placeholder="<?= translate('stepDesc') ?>" required class="form-input">
-                            <input type="text" name="step_num[]" value="<?= htmlspecialchars($step['num']) ?>" placeholder="<?= translate('stepNum') ?>" class="form-input">
+                            <input type="text" name="step_desc[]" value="<?= htmlspecialchars($step['description']) ?>" placeholder="<?= translate('stepDesc') ?>" >
+                            <input type="text" name="step_num[]" value="<?= htmlspecialchars($step['num']) ?>" placeholder="<?= translate('stepNum') ?>" >
                             <button type="button" class="remove-step">
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -126,9 +137,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php endforeach; ?>
                 <?php else: ?>
                     <div class="step-row">
-                        <input type="text" name="step_desc[]" value="" placeholder="<?= translate('stepDesc') ?>" required class="form-input">
-                        <input type="text" name="step_num[]" value=1 placeholder="<?= translate('stepNum')  ?>" class="form-input">
-                        <button type="button" class="remove-ingredient">
+                        <input type="text" name="step_desc[]" placeholder="<?= translate('stepDesc') ?> ">
+                        <input type="text" name="step_num[]" value=1 placeholder="<?= translate('stepNum') ?>">
+                        <button type="button" class="remove-step">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -146,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label for="url"><?= translate('urlForm') ?></label>
             <input type="text" id="url" name="url" value="<?= $isEditing ? htmlspecialchars($recipe['url']) : '' ?>" class="form-input">
             <button type="button" id="scrape-recipe-btn" class="scrape-recipe-btn">
-                <i class="fas fa-trash"></i>
+                <i class="fas fa-download"></i>
             </button>
         </div>
 
@@ -169,8 +180,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script>
-    $(document).ready(function() {
+    const recipeScraper = {
+        async scrapeRecipe(url) {
+            const response = await fetch('add_recipe.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `scrape=1&url=${encodeURIComponent(url)}`
+            });
 
+            const data = await response.json();
+            if (!data.success) {
+                throw new Error(data.error);
+            }
+            return data.recipe;
+        }
+    };
+
+    $(document).ready(function() {
         function updateStepNumbers() {
             $('.step-row').each(function(index) {
                 $(this).find('input[name="step_num[]"]').val(index + 1);
@@ -181,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             var newRow = $("<div class='ingredient-row'>" +
                 "<input type='text' name='ingredient_name[]' placeholder='<?= translate('ingNameForm') ?>' required class='form-input'>" +
                 "<input type='text' name='ingredient_quantity[]' placeholder='<?= translate('ingQuantityForm') ?>' class='form-input'>" +
-                "<button type='button' class='remove-ingredient'> <i class='fas fa-trash'></i></button>"+
+                "<button type='button' class='remove-ingredient'><i class='fas fa-trash'></i></button>" +
                 "</div>");
             $("#ingredients-container").append(newRow);
         });
@@ -190,12 +218,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $(this).parent().remove();
         });
 
-
         $("#add-step").click(function() {
             var newRow = $("<div class='step-row'>" +
                 "<input type='text' name='step_desc[]' placeholder='<?= translate('stepDesc') ?>' required class='form-input'>" +
-                "<input type='text' name='step_num[]' placeholder='><?= translate('stepNum') ?>'  value='<?= $stepsCount ?>' class='form-input'>" +
-                "<button type='button' class='remove-step'> <i class='fas fa-trash'></i></button>"+
+                "<input type='text' name='step_num[]' value='<?= $stepsCount + 1 ?>' placeholder='<?= translate('stepNum') ?>' class='form-input'>" +
+                "<button type='button' class='remove-step'><i class='fas fa-trash'></i></button>" +
                 "</div>");
             $("#steps-container").append(newRow);
             updateStepNumbers();
@@ -213,12 +240,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             try {
                 button.addClass('loading');
-                button.find('i').removeClass('fa-download').addClass('fa-spinner');
+                button.find('i').removeClass('fa-download').addClass('fa-spinner fa-spin');
 
                 const recipe = await recipeScraper.scrapeRecipe(url);
                 $("#name").val(recipe.name);
                 $("#image").val(recipe.image);
 
+                // Handle ingredients
                 $("#ingredients-container").empty();
                 recipe.ingredients.forEach(ing => {
                     const newRow = $("<div class='ingredient-row'>" +
@@ -228,19 +256,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         "</div>");
                     $("#ingredients-container").append(newRow);
                 });
+
+                // Handle steps
+                $("#steps-container").empty();
+                if (recipe.steps && recipe.steps.length > 0) {
+                    recipe.steps.forEach((step, index) => {
+                        const newRow = $("<div class='step-row'>" +
+                            "<input type='text' name='step_desc[]' value='" + step.description + "' required class='form-input'>" +
+                            "<input type='text' name='step_num[]' value='" + (index + 1) + "' class='form-input'>" +
+                            "<button type='button' class='remove-step'><i class='fas fa-trash'></i></button>" +
+                            "</div>");
+                        $("#steps-container").append(newRow);
+                    });
+                }
             } catch (error) {
                 alert("Erreur lors du scraping : " + error.message);
             } finally {
                 button.removeClass('loading');
-                button.find('i').removeClass('fa-spinner').addClass('fa-download');
+                button.find('i').removeClass('fa-spinner fa-spin').addClass('fa-download');
             }
         });
-
-
-
-
     });
 </script>
-
 </body>
 </html>

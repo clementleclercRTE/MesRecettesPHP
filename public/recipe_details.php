@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="recipe-content">
             <section class="recipe-steps">
-                <h2><?= translate('steps') ?></h2>
+                <h2><?= translate('recipeStep') ?></h2>
                 <ul class="steps-list">
                     <?php foreach ($recipe['steps'] as $step): ?>
                         <li class="step-item">

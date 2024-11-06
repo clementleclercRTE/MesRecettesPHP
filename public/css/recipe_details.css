@@ -13,6 +13,7 @@ body.dark .recipe-container {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
+
 .title-container{
     display: flex;
     gap: 1rem;
@@ -120,9 +121,13 @@ body.dark .ingredients-list, body.dark .recipe-description {
     align-items: flex-start;
     margin-bottom: 1.5rem;
     padding: 1rem;
-    background: #f8f8f8;
     border-radius: 8px;
+    background: #f4f4f4;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+body.dark .step-item{
+    background: #444;
 }
 
 .step-number {
@@ -142,6 +147,9 @@ body.dark .ingredients-list, body.dark .recipe-description {
     flex: 1;
     line-height: 1.5;
 }
+
+
+
 
 
 .edit-recipe-button i,
