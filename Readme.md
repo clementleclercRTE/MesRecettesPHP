@@ -1,52 +1,40 @@
-# 🍳 MesRecettes - Application de Gestion de Recettes
+# Gestionnaire de Recettes - Guide d'Installation
 
-Une application web permettant de gérer et organiser vos recettes de cuisine préférées.
+## Prérequis
 
-## 📋 Fonctionnalités
+- PHP 
+- SQLite3
+- Composer (pour les dépendances)
 
-- 🌓 Mode sombre/clair
-- 🌍 Support multilingue (FR/EN)
-- ➕ Ajout, modification et suppression de recettes
-- ⭐ Système de favoris
+## Installation
 
-## 🛠️ Technologies Utilisées
+1. **Installer les dépendances**
+```bash
+sudo apt update
+sudo apt install composer
+composer install 
+```
+Cette commande installera DiDom, nécessaire pour la fonctionnalité de scraping des recettes.
 
-- **Frontend** :
-    - HTML5
-    - CSS3 (Design responsive)
-    - JavaScript (Vanilla)
-    - Font Awesome (Icons)
+3. **Configuration de la base de données**
+- La base de données SQLite sera automatiquement créée au premier lancement
+- Le fichier de base de données sera créé dans : `database/recetteDb.db`
+- Les tables seront créées automatiquement grâce à la fonction `createTables()` dans `database.php`
 
-- **Backend** :
-    - PHP 8.x
-    - SQLite 3
+4. **Lancer le serveur de développement**
+```bash
+php -S localhost:8000 -t 
+```
 
-## 📦 Installation
+## Fonctionnalités Disponibles
 
-1. **Prérequis**
-   ```bash
-   - PHP 8.0 ou supérieur
-   - SQLite3
-   ```
+Une fois le serveur lancé, vous pouvez accéder à :
+- Liste des recettes : `http://localhost:8000/public/index`
+- Ajouter une recette : `http://localhost:8000/add_recipe.php`
+- Voir une recette : `http://localhost:8000/recipe_details.php?id=[ID]`
 
-## 🚀 Utilisation
+## Notes Importantes
 
-1. Cloner le projet : https://github.com/clementleclercRTE/MesRecettesPHP.git
-2. Acceder à la racine du projet
-3. Lancer le server PHP : php -S localHost:8080
-
-## Fonctionnalités 
-
-- Fonctionnalités principales :
-    - Ajout d'une recette : Cliquez sur "+" dans la barre de navigation
-    - Modification : Bouton "Éditer" sur la page de détails
-    - Suppression : Bouton "Supprimer" sur la page de détails
-    - Changement de thème : Icône lune/soleil
-    - Changement de langue : Bouton FR/EN
-
-
-## Aide à la réalisation de ce site 
-
-## Autre version
-
+- Le scraping de recettes fonctionne uniquement avec les URLs de Marmiton
+- Les préférences (langue, thème) sont stockées dans les cookies
 

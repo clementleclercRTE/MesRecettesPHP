@@ -1,0 +1,17 @@
+{
+    "name": "clementleclerc/mes-recettes-php",
+    "autoload": {
+        "psr-4": {
+            "Clementleclerc\\MesRecettesPhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "clementleclerc",
+            "email": "leclerc92@gmail.com"
+        }
+    ],
+    "require": {
+        "imangazaliev/didom": "^2.0"
+    }
+}
